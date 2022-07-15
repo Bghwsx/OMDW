@@ -31,6 +31,7 @@ function addPage(key, pageObject) {
 
     var pageButton = document.createElement("button");
     pageButton.innerHTML = pageObject.getDisplayName();
+    pageButton.id = key + "PageButton";
     if (!pageObject.canOpen()) {
         pageButton.innerHTML = "";
         pageButton.className = "coming-soon";
@@ -74,6 +75,7 @@ function setupPages() {
         "Incidents",
         new IncidentsPage(document.getElementById("IncidentsPage"))
     );
+    addPage("Charges", new ChargesPage(document.getElementById("ChargesPage")));
 }
 
 function showPage(targetKey) {
@@ -81,11 +83,18 @@ function showPage(targetKey) {
 
     for (const [key, value] of Object.entries(PAGES)) {
         var pageContent = document.getElementById(key + "Page");
+        var pageButton = document.getElementById(key + "PageButton");
 
         if (key == targetKey) {
             value.onShow();
             pageContent.className = "page-content";
-        } else pageContent.className = "page-content hidden";
+
+            pageButton.className = "selected";
+        } else {
+            pageContent.className = "page-content hidden";
+
+            pageButton.className = "";
+        }
     }
 
     setURLParam("p", targetKey);
@@ -156,6 +165,10 @@ function processURLQuery() {
 
         case "Incidents":
             showPage("Incidents");
+            break;
+
+        case "Charges":
+            showPage("Charges");
             break;
 
         default:
